@@ -16,11 +16,34 @@ public class TestCalculatorService {
 			Assertions.assertEquals(40, calculatorservice.sum());
 		}
 		@Test
+		public void testSums() {
+			CalculatorService calculatorservice=new CalculatorService();
+			
+			Assertions.assertEquals(40.00, calculatorservice.sum());
+		}
+		@Test
 		public void testMultiply() {
 			CalculatorService calculatorservice=new CalculatorService();
 			
 			Assertions.assertEquals(300, calculatorservice.multiply());
 	}
+		@Test
+		public void testMultiplys() {
+			CalculatorService calculatorservice=new CalculatorService();
+			
+			Assertions.assertEquals(300.0, calculatorservice.multiply());
+	}
 
-	
+		@Test
+		public void testSubtract() {
+			CalculatorService calculatorservice=new CalculatorService();
+			
+			Assertions.assertEquals(5, calculatorservice.subtract());
+	}
+		@Test
+		public void testDivide() {
+			CalculatorService calculatorservice=new CalculatorService();
+			
+			Assertions.assertEquals(3, calculatorservice.divide());
+	}
 }
