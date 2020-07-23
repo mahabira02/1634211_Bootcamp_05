@@ -1,6 +1,6 @@
 node{
 
-   def tomcatWeb = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\src'
+   def tomcatWeb = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2'
    def tomcatBin = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\bin'
    def tomcatStatus = ''
    stage('SCM Checkout'){
