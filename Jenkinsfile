@@ -24,7 +24,7 @@ node{
 '''
    }*/
    stage('Deploy to Tomcat'){
-     sh "copy target\\JenkinsWar.war \"${tomcatWeb}\\JenkinsWar.war\""
+     sh "copy target\\1634211_Bootcamp_05.war \"${tomcatWeb}\\1634211_Bootcamp_05.war\""
    }
       stage ('Start Tomcat Server') {
          sleep(time:5,unit:"SECONDS") 
