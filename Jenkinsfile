@@ -1,6 +1,6 @@
 node{
 
-   def tomcatWeb = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2'
+   def tomcatWeb = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\webapps'
    def tomcatBin = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\bin'
    def tomcatStatus = ''
    stage('SCM Checkout'){
@@ -24,7 +24,7 @@ node{
 '''
    }*/
    stage('Deploy to Tomcat'){
-     sh "copy target\\1634211_Bootcamp_05.war \"${tomcatWeb}\\1634211_Bootcamp_05.war\""
+     sh "copy target\\JenkinsWar.war \"${tomcatWeb}\\JenkinsWar.war\""
    }
       stage ('Start Tomcat Server') {
          sleep(time:5,unit:"SECONDS") 
