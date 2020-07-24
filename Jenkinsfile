@@ -1,34 +1,60 @@
-node{
-
-   def tomcatWeb = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\webapps'
-   def tomcatBin = 'D:\\Auto_deployment\\apache-tomcat-9.0.2\\apache-tomcat-9.0.2\\bin'
-   def tomcatStatus = ''
-   stage('SCM Checkout'){
-     git 'https://github.com/mahabira02/1634211_Bootcamp_05.git'
-   }
-   stage('Compile-Package-create-war-file'){
-      // Get maven home path
-      def mvnHome =  tool name: 'maven-3', type: 'maven'   
-      sh "${mvnHome}/bin/mvn package"
-      }
-/*   stage ('Stop Tomcat Server') {
-               bat ''' @ECHO OFF
-               wmic process list brief | find /i "tomcat" > NUL
-               IF ERRORLEVEL 1 (
-                    echo  Stopped
-               ) ELSE (
-               echo running
-                  "${tomcatBin}\\shutdown.bat"
-                  sleep(time:10,unit:"SECONDS") 
-               )
-'''
-   }*/
-   stage('Deploy to Tomcat'){
-     sh "copy target\\JenkinsWar.war \"${tomcatWeb}\\JenkinsWar.war\""
-   }
-      stage ('Start Tomcat Server') {
-         sleep(time:5,unit:"SECONDS") 
-         sh "${tomcatBin}\\startup.sh"
-         sleep(time:100,unit:"SECONDS")
-   }
-}
+node {
+        stage('git checkout') {
+            git credentialsId: 'GithubID', url: 'https://github.com/mahabira02/1634211_Bootcamp_05.git'  
+    }
+    
+    stage('code build & test') {
+        // sh 'mvn clean package'
+        
+        // using maven from runtime
+        
+        def mavenHome = tool name: 'maven-runtime' , type: 'maven'
+        
+        // using a variable and mentioning in double-quotes -- interpolation 
+        def mavenCMD = "${mavenHome}/bin/mvn" 
+        
+        sh "${mavenCMD} clean package"
+    }
+    
+    stage('docker build'){
+        
+        // use docker from runtime
+        
+        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
+        
+        // using a variable and mentioning in double-quotes -- interpolation 
+        def dockerCMD = "${dockerHome}/bin/docker" 
+        
+        // use docker available on machine 
+        
+        sh "sudo ${dockerCMD} build -t mmk4mmk/sbt_runtime_doc:1.0 ."
+    }
+    
+    stage('docker run'){
+        
+        // use docker from runtime
+        
+        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
+        
+        // using a variable and mentioning in double-quotes -- interpolation 
+        def dockerCMD = "${dockerHome}/bin/docker"
+        
+        sh "sudo ${dockerCMD} run -p 8888:8081 -d mmk4mmk/sbt_runtime_doc:1.0"
+    }
+    
+    stage('docker push'){
+        
+        // use docker from runtime
+        
+        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
+        
+        // using a variable and mentioning in double-quotes -- interpolation 
+        def dockerCMD = "${dockerHome}/bin/docker"
+        
+        //docker push 
+        withCredentials([string(credentialsId: 'dockerhub_pwd', variable: 'dockerHubpassword')]) {
+                // some block
+                sh "sudo ${dockerCMD} login -u mahabira02 -p ${dockerHubpassword}"
+            }
+        sh "sudo ${dockerCMD} push mahabira02/sbt_runtime_doc:1.0"
+    }
