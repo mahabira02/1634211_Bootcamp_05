@@ -27,7 +27,7 @@ node {
         
         // use docker available on machine 
         
-        sh "sudo ${dockerCMD} build -t mmk4mmk/sbt_runtime_doc:1.0 ."
+        sh "sudo ${dockerCMD} build -t mahabira02/sbt_runtime_docs:2.0 ."
     }
     
     stage('docker run'){
@@ -39,7 +39,7 @@ node {
         // using a variable and mentioning in double-quotes -- interpolation 
         def dockerCMD = "${dockerHome}/bin/docker"
         
-        sh "sudo ${dockerCMD} run -p 8888:8081 -d mmk4mmk/sbt_runtime_doc:1.0"
+        sh "sudo ${dockerCMD} run -p 8888:8081 -d mahabira02/sbt_runtime_docs:2.0"
     }
     
     stage('docker push'){
@@ -56,5 +56,5 @@ node {
                 // some block
                 sh "sudo ${dockerCMD} login -u mahabira02 -p ${dockerHubpassword}"
             }
-        sh "sudo ${dockerCMD} push mahabira02/sbt_runtime_doc:1.0"
+        sh "sudo ${dockerCMD} push mahabira02/sbt_runtime_docs:2.0"
     }
