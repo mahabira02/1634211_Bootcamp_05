@@ -1,14 +1,13 @@
-node {
-        stage('git checkout') {
-            git credentialsId: 'GithubID', url: 'https://github.com/mahabira02/1634211_Bootcamp_05.git'  
-    }
-    
-    stage('code build & test') {
+node{
+    stage('git checkout') {
+    git credentialsId: 'gitpassword', url: 'https://github.com/mahabira02/1634211_Bootcamp_05.git'
+}
+ stage('code build & test') {
         // sh 'mvn clean package'
         
-        // using maven from runtime
+        // using Maven3 from runtime
         
-        def mavenHome = tool name: 'maven-runtime' , type: 'maven'
+        def mavenHome = tool name: 'maven' , type: 'maven'
         
         // using a variable and mentioning in double-quotes -- interpolation 
         def mavenCMD = "${mavenHome}/bin/mvn" 
@@ -16,45 +15,34 @@ node {
         sh "${mavenCMD} clean package"
     }
     
-    stage('docker build'){
+     stage('docker build'){
         
         // use docker from runtime
         
-        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
+        def dockerHome = tool name: 'docker' , type: 'dockerTool'
         
-        // using a variable and mentioning in double-quotes -- interpolation 
-        def dockerCMD = "${dockerHome}/bin/docker" 
-        
-        // use docker available on machine 
-        
-        sh "sudo ${dockerCMD} build -t mahabira02/sbt_runtime_docs:2.0 ."
+        sh 'sudo docker build -t mahabira/cicd-pipeline:6.0 .'
     }
     
-    stage('docker run'){
+      stage('docker run'){
         
-        // use docker from runtime
-        
-        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
-        
-        // using a variable and mentioning in double-quotes -- interpolation 
-        def dockerCMD = "${dockerHome}/bin/docker"
-        
-        sh "sudo ${dockerCMD} run -p 8888:8081 -d mahabira02/sbt_runtime_docs:2.0"
+        sh 'sudo docker run -p 8096:8080 -d mahabira/cicd-pipeline:6.0'
     }
     
     stage('docker push'){
         
-        // use docker from runtime
-        
-        def dockerHome = tool name: 'docker-runtime' , type: 'dockerTool'
-        
-        // using a variable and mentioning in double-quotes -- interpolation 
-        def dockerCMD = "${dockerHome}/bin/docker"
-        
         //docker push 
-        withCredentials([string(credentialsId: 'dockerhub_pwd', variable: 'dockerHubpassword')]) {
+        withDockerRegistry(credentialsId: 'dockercasestudies', toolName: 'docker') {
                 // some block
-                sh "sudo ${dockerCMD} login -u mahabira02 -p ${dockerHubpassword}"
+                def customImage = docker.build('mahabira/cicd-pipeline:6.0')
+               customImage.push()
             }
-        sh "sudo ${dockerCMD} push mahabira02/sbt_runtime_docs:2.0"
     }
+    stage('create a new VM instance & Software') {
+                ansiblePlaybook 'aws_ansible.yml'
+            }
+     stage('List docker image') {
+         //docker list
+        sh 'sudo docker ps'
+      }
+}
