@@ -4,10 +4,10 @@ EXPOSE 8082
 
 ARG JAR_FILE=/target/*.jar
 
-COPY ${JAR_FILE} app.jar
+COPY ${JAR_FILE} myapps.jar
 
 RUN echo "Creating docker images Lets see"
 
 MAINTAINER "mahabira04@gmail.com"
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "myapps.jar"]
